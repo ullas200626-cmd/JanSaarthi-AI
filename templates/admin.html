@@ -1,0 +1,320 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JanSaarthi AI | Admin Dashboard</title>
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f3f6fb;
+            color: #172033;
+        }
+
+        header {
+            background: #123b67;
+            color: white;
+            padding: 24px 5%;
+        }
+
+        header h1 { margin: 0 0 8px; }
+        header p { margin: 0; color: #d9e8fb; }
+
+        main {
+            max-width: 1200px;
+            margin: 28px auto;
+            padding: 0 18px;
+        }
+
+        .notice {
+            background: #fff4d6;
+            border: 1px solid #efd58a;
+            padding: 13px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 16px;
+            margin-bottom: 26px;
+        }
+
+        .card, .panel {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 3px 12px #14213d0d;
+        }
+
+        .card p { color: #5d6b82; margin: 0 0 12px; }
+        .card strong { font-size: 30px; }
+
+        .panel { margin-bottom: 22px; }
+        .panel h2 { margin-top: 0; font-size: 20px; }
+
+        .category-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .category {
+            padding: 10px 14px;
+            background: #eaf2ff;
+            border-radius: 8px;
+        }
+
+        .table-wrap { overflow-x: auto; }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            min-width: 800px;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 13px 10px;
+            border-bottom: 1px solid #e7ebf2;
+            vertical-align: top;
+        }
+
+        th { background: #f7f9fc; }
+
+        select, button {
+            padding: 9px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        button {
+            background: #1769aa;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 5px;
+        }
+
+        button:disabled { opacity: 0.6; cursor: wait; }
+
+        .muted { color: #65738a; font-size: 13px; }
+        #message { margin: 12px 0; font-weight: bold; }
+
+        @media (max-width: 600px) {
+            header { padding: 20px; }
+            main { margin-top: 18px; }
+            .card, .panel { padding: 15px; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>JanSaarthi AI</h1>
+        <p>Demo Civic Complaint Administration Dashboard</p>
+    </header>
+
+    <main>
+        <div class="notice">
+            <strong>Prototype notice:</strong>
+            These are local demonstration records, not official government
+            complaints. This dashboard has no administrator login and is
+            intended for local development only.
+        </div>
+
+        <section class="cards">
+            <div class="card">
+                <p>Total complaints</p>
+                <strong id="total">0</strong>
+            </div>
+            <div class="card">
+                <p>Submitted</p>
+                <strong id="submitted">0</strong>
+            </div>
+            <div class="card">
+                <p>In progress</p>
+                <strong id="in-progress">0</strong>
+            </div>
+            <div class="card">
+                <p>Resolved</p>
+                <strong id="resolved">0</strong>
+            </div>
+        </section>
+
+        <section class="panel">
+            <h2>Civic Issue Analytics</h2>
+            <div id="categories" class="category-list">
+                Loading categories...
+            </div>
+        </section>
+
+        <section class="panel">
+            <h2>Complaint Management</h2>
+            <p class="muted">
+                Select a status and save it to update the local SQLite record.
+            </p>
+            <button id="refresh-button" type="button">Refresh dashboard</button>
+            <div id="message" role="status"></div>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Complaint ID</th>
+                            <th>Issue</th>
+                            <th>Message</th>
+                            <th>Language</th>
+                            <th>Created</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="complaint-rows">
+                        <tr><td colspan="7">Loading complaints...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const statusOptions = ["Submitted", "In Progress", "Resolved"];
+
+        function makeCell(text) {
+            const cell = document.createElement("td");
+            cell.textContent = text == null ? "" : String(text);
+            return cell;
+        }
+
+        async function loadDashboard() {
+            const message = document.getElementById("message");
+            message.textContent = "Loading dashboard...";
+
+            try {
+                const response = await fetch("/api/admin/dashboard");
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || "Unable to load dashboard.");
+                }
+
+                document.getElementById("total").textContent = data.counts.total;
+                document.getElementById("submitted").textContent = data.counts.submitted;
+                document.getElementById("in-progress").textContent = data.counts.in_progress;
+                document.getElementById("resolved").textContent = data.counts.resolved;
+
+                const categoryBox = document.getElementById("categories");
+                categoryBox.replaceChildren();
+
+                const categories = Object.entries(data.categories);
+
+                if (categories.length === 0) {
+                    categoryBox.textContent = "No complaint data yet.";
+                } else {
+                    categories.forEach(([name, count]) => {
+                        const item = document.createElement("div");
+                        item.className = "category";
+                        item.textContent = `${name}: ${count}`;
+                        categoryBox.appendChild(item);
+                    });
+                }
+
+                const tbody = document.getElementById("complaint-rows");
+                tbody.replaceChildren();
+
+                if (data.complaints.length === 0) {
+                    const row = document.createElement("tr");
+                    const cell = makeCell("No complaints registered yet.");
+                    cell.colSpan = 7;
+                    row.appendChild(cell);
+                    tbody.appendChild(row);
+                }
+
+                data.complaints.forEach((complaint) => {
+                    const row = document.createElement("tr");
+
+                    row.appendChild(makeCell(complaint.complaint_id));
+                    row.appendChild(makeCell(complaint.issue));
+                    row.appendChild(makeCell(complaint.message));
+                    row.appendChild(makeCell(complaint.language));
+                    row.appendChild(makeCell(complaint.created_at));
+
+                    const statusCell = document.createElement("td");
+                    const select = document.createElement("select");
+
+                    statusOptions.forEach((status) => {
+                        const option = document.createElement("option");
+                        option.value = status;
+                        option.textContent = status;
+                        option.selected = status === complaint.status;
+                        select.appendChild(option);
+                    });
+
+                    statusCell.appendChild(select);
+                    row.appendChild(statusCell);
+
+                    const actionCell = document.createElement("td");
+                    const saveButton = document.createElement("button");
+                    saveButton.type = "button";
+                    saveButton.textContent = "Save status";
+
+                    saveButton.addEventListener("click", async () => {
+                        saveButton.disabled = true;
+                        message.textContent = "Saving status...";
+
+                        try {
+                            const updateResponse = await fetch(
+                                `/api/admin/complaints/${encodeURIComponent(complaint.complaint_id)}`,
+                                {
+                                    method: "PATCH",
+                                    headers: {
+                                        "Content-Type": "application/json"
+                                    },
+                                    body: JSON.stringify({ status: select.value })
+                                }
+                            );
+
+                            const result = await updateResponse.json();
+
+                            if (!updateResponse.ok) {
+                                throw new Error(result.error || "Update failed.");
+                            }
+
+                            message.textContent =
+                                `${result.complaint_id} updated to ${result.status}. Demo record only.`;
+
+                            await loadDashboard();
+                        } catch (error) {
+                            message.textContent = error.message;
+                        } finally {
+                            saveButton.disabled = false;
+                        }
+                    });
+
+                    actionCell.appendChild(saveButton);
+                    row.appendChild(actionCell);
+                    tbody.appendChild(row);
+                });
+
+                message.textContent =
+                    `Loaded ${data.counts.total} local demo complaint(s).`;
+            } catch (error) {
+                message.textContent =
+                    `Dashboard error: ${error.message}. Check the admin server terminal.`;
+            }
+        }
+
+        document.getElementById("refresh-button")
+            .addEventListener("click", loadDashboard);
+
+        loadDashboard();
+    </script>
+</body>
+</html>

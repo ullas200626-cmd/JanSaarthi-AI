@@ -1,0 +1,81 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JanSaarthi AI | Citizen Service Assistant</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header class="site-header">
+        <div class="brand">
+            <div class="brand-icon">JS</div>
+            <div>
+                <h1>JanSaarthi AI</h1>
+                <p>Your Language. Your Voice. Your Government.</p>
+            </div>
+        </div>
+        <span class="demo-label">PROTOTYPE</span>
+    </header>
+
+    <main class="main-layout">
+        <section class="welcome">
+            <p class="eyebrow">CITIZEN SERVICE ASSISTANT</p>
+            <h2>Every citizen deserves to be heard.</h2>
+            <p>
+                Describe a civic problem in your own words.
+                JanSaarthi is being developed to help citizens
+                understand services, prepare complaints, and track cases.
+            </p>
+            <div class="feature-list">
+                <div>🌐 Multilingual assistance</div>
+                <div>📋 Structured complaint preparation</div>
+                <div>🔎 Transparent case tracking</div>
+            </div>
+            <p class="notice">
+                Demo version: government departments are not connected.
+            </p>
+        </section>
+
+        <section class="chat-card">
+            <div class="chat-heading">
+                <div class="assistant-avatar">JS</div>
+                <div>
+                    <h2>JanSaarthi Assistant</h2>
+                    <p><span class="status-dot"></span> Demo assistant available</p>
+                </div>
+            </div>
+
+            <div id="chat-messages" class="chat-messages" aria-live="polite">
+                <div class="message assistant-message">
+                    Namaste! Welcome to JanSaarthi AI. Describe your
+                    civic problem to try our first demo.
+                </div>
+            </div>
+
+            <form id="chat-form" class="chat-form">
+                <label class="sr-only" for="message-input">Your message</label>
+                <textarea
+                    id="message-input"
+                    name="message"
+                    placeholder="Describe your problem..."
+                    rows="2"
+                    maxlength="2000"
+                    required
+                ></textarea>
+                <button id="send-button" type="submit">Send ↗</button>
+            </form>
+            <p class="chat-footnote">
+                Do not enter passwords, identity numbers, or other sensitive information.
+            </p>
+        </section>
+    </main>
+
+    <footer>
+        JanSaarthi AI · Student-built social-impact prototype
+    </footer>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
