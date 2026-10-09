@@ -2,34 +2,76 @@
 
 ### Your Language. Your Voice. Your Government.
 
-**JanSaarthi AI** is a multilingual civic assistance prototype designed to help citizens describe common local problems, identify the type of issue, register a demonstration complaint, and track its status.
+**JanSaarthi AI** is a multilingual civic-issue assistance prototype designed to help citizens describe common civic problems, identify an issue category, register a demo complaint, and check its status.
 
-The project explores how accessible digital technology can make civic issue reporting easier for people who may face language or digital-literacy barriers.
+The project explores how accessible digital tools can make civic issue reporting easier to understand and use.
 
-> **Important:** This is a student prototype. Complaints are stored locally in a demonstration database and are NOT submitted to any real government department.
+> **Important:** This is an educational prototype. Complaints are stored locally for demonstration and are not submitted to any government department or official portal.
 
 ## 1. Problem Statement
 
-Citizens may find it difficult to identify the correct channel for reporting local issues such as water supply problems, damaged roads, streetlight failures, sanitation concerns, and electricity issues. Language barriers and complicated reporting processes can make the experience more difficult.
+Citizens may face difficulties understanding digital services, describing civic problems through online systems, or following the status of a complaint. Language barriers can make these processes more difficult.
 
-JanSaarthi AI explores a simple, multilingual interface for describing these issues and managing demonstration complaint records.
+JanSaarthi AI explores a simple, language-aware interface for reporting and tracking common civic issues.
+
+These are the problems the prototype aims to address; their scale and impact have not yet been measured through a formal user study.
 
 ## 2. Proposed Solution
 
-The prototype provides:
+The prototype provides a basic workflow:
 
-* A text-based civic assistance chatbot.
-* Language detection and responses in five configured languages.
-* Rule-based classification of supported civic issues.
-* Demonstration complaint registration with a unique complaint ID.
-* Complaint status tracking.
-* An admin dashboard for viewing complaint records.
-* Status management for Submitted, In Progress, and Resolved.
-* Basic analytics showing complaint counts by category.
+1. A citizen enters a civic issue as text.
+2. The application attempts to detect the language.
+3. Keyword-based rules identify a supported issue category.
+4. The citizen can register a demo complaint and receive a complaint ID.
+5. The complaint can be looked up using its ID.
+6. A separate local admin dashboard can view records and update their demo status.
 
-## 3. Supported Languages
+## 3. Implemented Features
 
-The current configured languages are:
+* Text-based civic issue input.
+* Language detection and localized responses for the five configured languages: English, Hindi, Tamil, Telugu, and Marathi.
+* Keyword-based classification for water, roads, streetlights, sanitation, and electricity issues.
+* Demo complaint registration with a generated complaint ID.
+* Complaint tracking through a local API.
+* SQLite database for local complaint records.
+* Separate admin dashboard with complaint listings, status counts, category counts, and local status updates.
+* Automated tests covering core application and dashboard behaviour.
+
+**Classification note:** Issue categories are identified using keyword rules, not a trained machine-learning model.
+
+## 4. Technology Stack
+
+* **Language:** Python
+* **Web framework:** Flask
+* **Language detection:** Lingua
+* **Database:** SQLite
+* **Frontend:** HTML, CSS, JavaScript
+* **Testing:** Python automated tests
+
+## 5. System Architecture
+
+Citizen web interface
+→ Flask application and API
+→ Language detection and keyword-based issue classification
+→ Local SQLite database
+→ Complaint tracking and separate admin dashboard
+
+The citizen application and admin dashboard use the same local database.
+
+## 6. Supported Issue Categories
+
+| Category     | Example topic                  |
+| ------------ | ------------------------------ |
+| Water        | Water supply problems          |
+| Roads        | Damaged roads                  |
+| Streetlights | Streetlight problems           |
+| Sanitation   | Waste and cleanliness issues   |
+| Electricity  | Electricity-related complaints |
+
+The examples illustrate the categories. Actual classification depends on the keywords implemented in the code.
+
+## 7. Configured Languages
 
 * English
 * Hindi
@@ -37,169 +79,114 @@ The current configured languages are:
 * Telugu
 * Marathi
 
-Kannada support and additional accessibility features are future development goals, not features claimed as completed in this version.
+Kannada support is a future development goal and is not claimed as implemented in the current version.
 
-## 4. Supported Issue Categories
-
-The current prototype recognises these categories:
-
-* Water supply
-* Roads
-* Streetlights
-* Sanitation
-* Electricity
-
-Classification is based on implemented rules and should be evaluated with varied test messages. It is not a guarantee that every citizen message will be classified correctly.
-
-## 5. Technology Stack
-
-| Component               | Technology               |
-| ----------------------- | ------------------------ |
-| Backend                 | Python and Flask         |
-| Frontend                | HTML, CSS, JavaScript    |
-| Language detection      | Lingua language detector |
-| Database                | SQLite                   |
-| API communication       | HTTP and JSON            |
-| Development environment | Visual Studio Code       |
-
-## 6. Project Structure
-
-```text
-JanSaarthi-AI/
-├── app.py
-├── admin_dashboard.py
-├── database.py
-├── requirements.txt
-├── README.md
-├── templates/
-│   ├── index.html
-│   └── admin.html
-├── static/
-│   ├── script.js
-│   └── style.css
-├── data/
-│   └── services.json
-└── database/
-    └── jansaarthi.db
-```
-
-The SQLite database file is created or used locally by the application. Do not commit real citizens' personal information or sensitive complaint records to a public repository.
-
-## 7. Installation and Setup
+## 8. Project Setup
 
 ### Prerequisites
 
-* Python installed on your computer.
-* Visual Studio Code or another code editor.
-* A terminal such as Windows PowerShell.
+* Python installed
+* Git (optional, for cloning the repository)
 
-### Install dependencies
+### Install and run
 
-Open the terminal in the project folder and run:
+Clone the repository:
 
-```powershell
+```bash
+git clone https://github.com/ullas200626-cmd/JanSaarthi-AI.git
+cd JanSaarthi-AI
+```
+
+Install dependencies:
+
+```bash
 python -m pip install -r requirements.txt
 ```
 
-### Start the citizen chatbot
+Start the citizen application:
 
-Run:
-
-```powershell
+```bash
 python app.py
 ```
 
-Open the local address shown in the terminal. In the usual Flask development configuration, this is `http://127.0.0.1:5000`.
+Open the local address printed in the terminal, normally `http://127.0.0.1:5000`.
 
-### Start the admin dashboard
+### Run the admin dashboard
 
-Open a second terminal in the same project folder and run:
+Open a second terminal in the project folder and run:
 
-```powershell
+```bash
 python admin_dashboard.py
 ```
 
 Open `http://127.0.0.1:5001` in your browser.
 
-Keep both development servers running while testing the complete workflow.
-
-## 8. Demonstration Workflow
-
-1. Enter a civic problem in a supported language.
-2. Review the chatbot response and detected issue category.
-3. Register a demonstration complaint when the option is available.
-4. Save the generated complaint ID.
-5. Track the complaint using that ID.
-6. Open the admin dashboard to view the record.
-7. Change its status and save the update.
-8. Track the complaint again to verify the new status.
-
-All steps operate on local demonstration records.
+**Security warning:** The prototype admin dashboard does not have authentication. Run it locally for demonstration only; do not expose it publicly or use it for real citizen data.
 
 ## 9. API Overview
 
-The current prototype includes these application endpoints:
+| Endpoint                                     | Purpose                                                       |
+| -------------------------------------------- | ------------------------------------------------------------- |
+| `GET /`                                      | Opens the citizen interface                                   |
+| `GET /api/health`                            | Checks application health and reports configured languages    |
+| `POST /api/chat`                             | Detects language and returns a keyword-based issue suggestion |
+| `POST /api/complaints`                       | Registers a demo complaint                                    |
+| `GET /api/complaints/<complaint_id>`         | Looks up a complaint by ID                                    |
+| `GET /api/admin/dashboard`                   | Retrieves dashboard records and summary counts                |
+| `PATCH /api/admin/complaints/<complaint_id>` | Updates a complaint's local demo status                       |
 
-| Endpoint                                     | Purpose                                   |
-| -------------------------------------------- | ----------------------------------------- |
-| `GET /api/health`                            | Check application health                  |
-| `POST /api/chat`                             | Process a citizen message                 |
-| `POST /api/complaints`                       | Register a demonstration complaint        |
-| `GET /api/complaints/<complaint_id>`         | Track a complaint                         |
-| `GET /api/admin/dashboard`                   | Retrieve dashboard records and counts     |
-| `PATCH /api/admin/complaints/<complaint_id>` | Update a demonstration complaint's status |
+The admin endpoints belong to the separate application running on port 5001.
 
-The chatbot and complaint endpoints are provided by the main Flask application. The admin endpoints are provided by the separate dashboard application, so run the appropriate server when testing them.
+## 10. Testing
 
-## 10. Testing and Evidence
+The project has seven automated tests reported as passing during development. They cover:
 
-The prototype has been manually tested for:
+* Application health endpoint
+* Water-issue recognition
+* Complaint registration and tracking
+* Unknown complaint handling
+* Rejection of an invalid status
+* Visibility of a changed status
+* Admin dashboard counts
 
-* Responses to sample messages in the five configured languages.
-* Demonstration complaint registration.
-* Complaint ID generation and tracking.
-* Display of records in the admin dashboard.
-* Complaint status updates reflected in the tracking workflow.
+Run the tests with:
 
-For a competition submission, add dated screenshots, reproducible test cases, expected results, and actual results. Do not claim automated testing, real-world deployment, or official government integration unless those have actually been completed and verified.
+```bash
+python -m unittest discover -s tests -v
+```
 
-## 11. Responsible AI and Limitations
+Test results describe the tested prototype behaviour. They do not establish real-world accuracy, government acceptance, or measurable social impact.
 
-* Language detection and issue classification can make mistakes.
-* The current classifier uses implemented rules; it should not be described as a fully trained AI model.
-* The system does not contact government departments.
-* Complaint statuses are demonstration statuses, not official service updates.
-* The local admin dashboard does not yet have administrator authentication.
-* The application has not been established as production-ready.
-* Public deployment would require security controls, access management, privacy protections, validation, error handling, and further testing.
+## 11. Future Scope — Not Yet Implemented
 
-### AI usage disclosure
+The following are development goals, not existing features:
 
-The prototype uses a language-detection library and rule-based issue classification. Generative AI may be used during development for coding assistance or documentation. The team should disclose the actual tools used and verify generated code before submission.
+* Kannada support and validation of language detection across all target languages.
+* Voice input and speech-based interaction.
+* More robust AI-assisted issue classification and priority analysis.
+* Location extraction and verified department/service routing.
+* Real-time notifications and escalation reminders.
+* Admin authentication, authorization, and audit logs.
+* Integration with official government portals or department APIs, subject to permission and technical availability.
+* User testing, accessibility evaluation, privacy safeguards, and impact measurement.
 
-## 12. Future Development
+## 12. Responsible AI and Privacy
 
-Potential next steps include:
+* The current classifier uses keywords and can misunderstand unclear or multilingual messages.
+* Language detection may be inaccurate, especially for short messages.
+* Complaint records are demonstration data stored in a local SQLite database.
+* Do not enter sensitive personal information or real citizens' private data.
+* No official government submission or external department integration is implemented.
+* Human review and proper authorization would be needed before any real-world deployment.
 
-* Kannada language support.
-* Voice input and improved accessibility.
-* More robust multilingual issue classification.
-* Configurable routing information for civic services.
-* Secure administrator login and role-based access.
-* Better analytics and downloadable reports.
-* Testing with diverse, anonymised sample messages.
-* Official integrations only after proper authorisation and technical validation.
+## 13. AI Usage Disclosure
 
-## 13. Open-Source and Contribution
-
-This project is being developed as a student prototype for civic technology and social impact.
-
-Before publishing, select an appropriate open-source licence, add the licence file, review dependencies, and remove secrets or private data. Contributions should include clear documentation and reproducible testing instructions.
+AI assistance was used during project development and documentation. The repository's code, feature descriptions, setup instructions, and test claims should be reviewed by the project team before submission. The team is responsible for understanding, testing, and presenting the submitted work accurately.
 
 ## 14. Project Status
 
-**Current status:** Local working prototype with multilingual text interaction, demonstration complaint registration and tracking, and a local admin dashboard.
+**Status:** Working educational prototype
 
-**Project goal:** Explore a more accessible way for citizens to describe civic issues in their preferred language.
+**Repository:** https://github.com/ullas200626-cmd/JanSaarthi-AI
 
-**Tagline:** Your Language. Your Voice. Your Government.
+JanSaarthi AI is an exploration of how multilingual digital tools could help citizens communicate civic issues more easily. Its current implementation is a foundation for future testing and responsible development, not a live government service.
