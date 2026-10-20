@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>JanSaarthi AI | Admin Dashboard</title>
     <style>
         * { box-sizing: border-box; }
@@ -275,8 +276,11 @@
                                 {
                                     method: "PATCH",
                                     headers: {
-                                        "Content-Type": "application/json"
-                                    },
+    "Content-Type": "application/json",
+    "X-CSRFToken": document.querySelector(
+        'meta[name="csrf-token"]'
+    ).content
+},
                                     body: JSON.stringify({ status: select.value })
                                 }
                             );

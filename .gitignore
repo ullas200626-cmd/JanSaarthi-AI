@@ -26,3 +26,11 @@ database/*.sqlite3
 # Operating system files
 .DS_Store
 Thumbs.db
+
+# Accidental backups
+*.accidental-backup
+
+# Local database files
+*.db
+*.sqlite
+*.sqlite3
